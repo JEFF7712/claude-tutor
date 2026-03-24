@@ -1,0 +1,8 @@
+{
+  "name": "tutor",
+  "description": "Adaptive tutor skill with 10 teaching modes — Socratic questioning, interleaved drills, analogies, visual thinking, active recall, and more. Makes Claude act as an interactive coach for learning any topic.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Rupan Sunderapandyan"
+  }
+}
