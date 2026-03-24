@@ -1,0 +1,13 @@
+{
+  "name": "claude-tutor",
+  "owner": {
+    "name": "Rupan Sunderapandyan"
+  },
+  "plugins": [
+    {
+      "name": "tutor",
+      "source": ".",
+      "description": "Adaptive tutor skill with 10 teaching modes — Socratic questioning, interleaved drills, analogies, visual thinking, active recall, and more."
+    }
+  ]
+}
