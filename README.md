@@ -4,9 +4,17 @@ An adaptive tutor skill for Claude Code that makes Claude act as an interactive 
 
 ## Install
 
+### As a plugin
+
 ```
 /plugin marketplace add JEFF7712/claude-tutor
 /plugin install tutor@claude-tutor
+```
+
+### Manual
+
+```bash
+git clone https://github.com/JEFF7712/claude-tutor.git ~/.claude/skills/claude-tutor
 ```
 
 ## Usage
