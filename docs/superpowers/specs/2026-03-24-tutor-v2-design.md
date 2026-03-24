@@ -20,6 +20,10 @@ The modes are the pedagogy. The tools are the toolkit. Same teacher, better clas
 
 Four new capabilities added as a section in SKILL.md, after the existing 10 modes. Any mode can use them when appropriate.
 
+**Prompt format:** Each tool follows a `**Trigger:** / **Behavior:**` pattern (distinct from the modes' `**When:** / **How:**` format to make clear these are tools, not modes).
+
+**Graceful degradation:** If any tool is unavailable (no internet for web research, Bash restricted, etc.), fall back to conversational teaching. Tools enhance — they're never required.
+
 ### 1.1 Live Code Execution
 
 **Trigger:** Topic involves programming, math, data, or any concept demonstrable with runnable code.
@@ -35,7 +39,7 @@ Four new capabilities added as a section in SKILL.md, after the existing 10 mode
 **Trigger:** Learner is in a practice mode or the tutor decides they need hands-on practice.
 
 **Behavior:**
-- Create a temporary exercise file (e.g., `/tmp/tutor-exercise.py`) with a skeleton and clear instructions in comments
+- Create a temporary exercise file (e.g., `/tmp/tutor-exercise.<ext>` — use the appropriate extension for the learner's language) with a skeleton and clear instructions in comments
 - Tell the learner to open and fill in the implementation
 - When the learner is done, read their code and run it — provide feedback on correctness, style, and edge cases
 - For test-driven exercises: write tests first, have the learner make them pass
@@ -93,9 +97,9 @@ Restructure with clear section headers (no content rewrite):
 1. **Opening Protocol** — assessment, topic scoping
 2. **Teaching Modes** — the 10 modes
 3. **Active Teaching Tools** — new capability layer
-4. **Mode Switching** — adaptive signals table (moved after tools so it can reference them)
+4. **Mode Switching** — adaptive signals table, explicit mode commands (moved after tools so it can reference them)
 5. **Session Rules** — NEVER/ALWAYS lists, confusion escalation
-6. **Session Closure** — wrap-up protocol
+6. **Session Closure** — consolidates existing session-ending behavior from the mode blending table and the ALWAYS rules into one named section
 
 ### 3.2 Plugin Metadata
 
