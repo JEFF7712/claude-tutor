@@ -4,9 +4,14 @@ An adaptive tutor skill for Claude Code that makes Claude act as an interactive 
 
 ## Install
 
+Clone this repo into your Claude Code skills directory:
+
+```bash
+mkdir -p ~/.claude/skills && cd ~/.claude/skills
+git clone https://github.com/JEFF7712/claude-tutor.git
 ```
-/plugin install JEFF7712/claude-tutor
-```
+
+Then restart Claude Code. The `/tutor` skill will be available automatically.
 
 ## Usage
 
