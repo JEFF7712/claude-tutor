@@ -113,9 +113,13 @@ const WAITING_PAGE = `<!DOCTYPE html>
 // ---------------------------------------------------------------------------
 // Content rendering
 // ---------------------------------------------------------------------------
-function buildHelperTag() {
+function getHelperJs() {
   // Re-read helper at serve time so live edits are picked up during dev
-  const js = loadAsset("tutor-helper.js") || helperScript || "";
+  return loadAsset("tutor-helper.js") || helperScript || "";
+}
+
+function buildHelperTag() {
+  const js = getHelperJs();
   if (!js) return "";
   return `<script>\n${js}\n</script>`;
 }
@@ -148,7 +152,7 @@ function renderContent() {
   if (tpl) {
     return tpl
       .replace("{{CONTENT}}", raw)
-      .replace("{{HELPER_SCRIPT}}", buildHelperTag());
+      .replace("{{HELPER_SCRIPT}}", getHelperJs());
   }
   // Fallback: minimal wrapper
   return `<!DOCTYPE html><html><head><meta charset="utf-8">
