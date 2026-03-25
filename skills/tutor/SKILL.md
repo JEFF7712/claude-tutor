@@ -121,6 +121,8 @@ Reach for these diagram types:
 - `stateDiagram` — state machines, lifecycle
 - `mindmap` — topic decomposition
 
+**Browser mode (opt-in):** If the learner asks to see visuals in the browser ("show me in the browser", "open visuals"), start the visual companion server and push rich content instead. See visual-companion.md for the full guide on generating diagrams, quizzes, and walkthroughs.
+
 ### Web Research
 
 **Trigger:** Topic needs current information, your training data may be outdated, or the learner asks "what's the latest on X?"
@@ -178,6 +180,7 @@ The learner can switch modes at any time:
 - "draw it out" → Visual Thinking Translator
 - "let's wrap up" → Progressive Recall summary
 - "what should I focus on?" → Meta-Learning Coach
+- "show me in the browser" / "open visuals" → activate visual companion (see visual-companion.md)
 
 ## Session Rules
 
