@@ -98,14 +98,31 @@ else
   result 6 "Full HTML document served directly" "false"
 fi
 
-# ── Test 7: Graceful shutdown ─────────────────────────────────────────────────
+# ── Test 7: No double script tags (regression) ─────────────────────────────
+cat > "$TEST_DIR/screen4.html" <<'HTMLEOF'
+<h2>Interactive Test</h2>
+<div class="quiz">
+  <div class="quiz-option" data-choice="a" data-correct="true" onclick="checkAnswer(this)">
+    <div class="letter">A</div><div class="content">Answer</div>
+  </div>
+</div>
+HTMLEOF
+sleep 1
+BODY=$(curl -s "$BASE_URL")
+if echo "$BODY" | grep -q "<script><script>"; then
+  result 7 "No double script tags in fragment serving" "false"
+else
+  result 7 "No double script tags in fragment serving" "true"
+fi
+
+# ── Test 8: Graceful shutdown ───────────────────────────────────────────────── ─────────────────────────────────────────────────
 kill "$SERVER_PID"
 wait "$SERVER_PID" 2>/dev/null || true
 sleep 1
 if [[ -f "$TEST_DIR/.server-stopped" ]]; then
-  result 7 "Graceful shutdown writes .server-stopped" "true"
+  result 8 "Graceful shutdown writes .server-stopped" "true"
 else
-  result 7 "Graceful shutdown writes .server-stopped" "false"
+  result 8 "Graceful shutdown writes .server-stopped" "false"
 fi
 # Clear PID so cleanup doesn't try to kill again
 SERVER_PID=""
