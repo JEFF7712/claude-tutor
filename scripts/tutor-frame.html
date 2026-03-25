@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutor Visual Companion</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+  </script>
+  <style>
+    :root {
+      --bg: #1a1b26;
+      --surface: #24283b;
+      --text: #c0caf5;
+      --text-muted: #565f89;
+      --accent: #7aa2f7;
+      --success: #9ece6a;
+      --error: #f7768e;
+      --border: #3b4261;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+        Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+
+    h2 {
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Diagram ── */
+    .diagram {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Quiz ── */
+    .quiz {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .quiz-option {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .quiz-option:hover {
+      border-color: var(--accent);
+    }
+
+    .quiz-option .letter {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background: var(--border);
+      color: var(--text);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .quiz-option.correct {
+      border-color: var(--success);
+      background: rgba(158, 206, 106, 0.1);
+    }
+
+    .quiz-option.correct .letter {
+      background: var(--success);
+      color: var(--bg);
+    }
+
+    .quiz-option.incorrect {
+      border-color: var(--error);
+      background: rgba(247, 118, 142, 0.1);
+    }
+
+    .quiz-option.incorrect .letter {
+      background: var(--error);
+      color: var(--bg);
+    }
+
+    .quiz-option.reveal-correct {
+      border: 2px dashed var(--success);
+    }
+
+    .quiz-option.locked {
+      pointer-events: none;
+    }
+
+    /* ── Walkthrough ── */
+    .walkthrough {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    .step {
+      opacity: 0;
+      transform: translateX(20px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      display: none;
+    }
+
+    .step.active {
+      opacity: 1;
+      transform: translateX(0);
+      display: block;
+    }
+
+    .visual {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.5rem;
+      padding: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      min-height: 120px;
+    }
+
+    .explanation {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      background: var(--surface);
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+
+    .bar {
+      width: 2.5rem;
+      background: var(--accent);
+      border-radius: 4px 4px 0 0;
+      transition: height 0.4s ease, background 0.3s ease;
+      min-height: 4px;
+    }
+
+    .bar.highlight {
+      background: var(--success);
+    }
+
+    .bar.compared {
+      background: var(--error);
+    }
+
+    .walkthrough-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .walkthrough-nav button {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.4rem 1rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+    }
+
+    .walkthrough-nav button:hover {
+      border-color: var(--accent);
+    }
+
+    .walkthrough-nav button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .walkthrough-nav .step-indicator {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  {{CONTENT}}
+  <script>{{HELPER_SCRIPT}}</script>
+</body>
+</html>
