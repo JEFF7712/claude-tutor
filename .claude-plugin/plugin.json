@@ -1,7 +1,7 @@
 {
   "name": "tutor",
-  "description": "Adaptive tutor skill with 10 teaching modes and active teaching tools — runs code, creates exercises, generates diagrams, and researches topics. Makes Claude act as an interactive coach for learning any subject.",
-  "version": "2.0.0",
+  "description": "Adaptive tutor skill with 10 teaching modes, active teaching tools, and a browser-based visual companion — runs code, creates exercises, generates interactive diagrams, quizzes, and walkthroughs. Makes Claude act as an interactive coach for learning any subject.",
+  "version": "2.1.0",
   "author": {
     "name": "Rupan Sunderapandyan"
   }
