@@ -8,7 +8,7 @@
 
 A browser-based visual teaching companion for the tutor skill. The tutor pushes rich HTML content (rendered diagrams, interactive quizzes, visual walkthroughs) to a browser while the teaching conversation continues in the terminal. Opt-in only — activated when the learner explicitly asks for visual content.
 
-Inspired by the superpowers Visual Companion architecture (file-watch → serve → events) but purpose-built for teaching. Self-contained, no external dependencies.
+Inspired by the superpowers Visual Companion architecture (file-watch → serve → events) but purpose-built for teaching. Self-contained with zero npm dependencies. Requires Node.js at runtime and loads Mermaid.js from CDN (internet required for diagram rendering).
 
 ## Scope
 
@@ -30,11 +30,11 @@ The companion follows a terminal+browser loop:
 
 ### Components
 
-**Server** (`scripts/tutor-server.js`): ~100-150 lines of Node.js using only built-ins (`http`, `fs`, `path`). Watches `screen_dir` for new `.html` files by mtime, serves the newest one. Injects helper script into served pages. Provides `POST /events` endpoint for recording interactions. Auto-exits after 30 minutes of inactivity. Writes startup info to `screen_dir/.server-info`.
+**Server** (`scripts/tutor-server.js`): ~200-250 lines of Node.js using only built-ins (`http`, `fs`, `path`). Binds to `127.0.0.1` (localhost only). Polls `screen_dir` every 500ms for new `.html` files by mtime, serves the newest one. Injects helper script into served pages. Provides `POST /events` endpoint for recording interactions. Auto-exits after 30 minutes of inactivity. Writes startup info to `screen_dir/.server-info`.
 
 **Frame template** (`scripts/tutor-frame.html`): HTML wrapper for content fragments. Loads Mermaid.js from CDN for diagram rendering. Provides CSS theme and component styles for quizzes, walkthroughs, and diagrams. Injected around fragments that don't start with `<!DOCTYPE` or `<html>`.
 
-**Helper script** (`scripts/tutor-helper.js`): Client-side JS injected into every page. Handles: click event posting to server, Mermaid rendering initialization, quiz answer checking with visual feedback, walkthrough step navigation with CSS transitions.
+**Helper script** (`scripts/tutor-helper.js`): Client-side JS injected into every page. Exposes global functions: `checkAnswer(el)` for quiz feedback, `prevStep()`/`nextStep()` for walkthrough navigation. Also handles: click event posting to server, Mermaid rendering initialization, and CSS transition triggers for walkthroughs.
 
 **Start script** (`scripts/start-server.sh`): Platform-aware launcher. Creates `screen_dir` at `<project>/.tutor/sessions/<timestamp>/`. Returns JSON with port, URL, and screen_dir path.
 
@@ -60,6 +60,23 @@ The learner says one of:
 4. Continue teaching — browser for visuals, terminal for conversation
 5. When returning to conversational-only teaching, push a waiting screen
 
+### Waiting Screen
+
+When the tutor returns to conversational-only teaching, push a waiting screen to clear stale content:
+
+```html
+<!-- filename: waiting.html -->
+<div style="display:flex;align-items:center;justify-content:center;min-height:60vh">
+  <p class="subtitle">Continuing in terminal...</p>
+</div>
+```
+
+Use unique filenames for multiple waiting screens (`waiting-2.html`, etc.).
+
+### Persisting screen_dir
+
+When the tutor starts the server, it saves the returned `screen_dir` path. On subsequent turns, it checks `screen_dir/.server-info` to confirm the server is still alive. If `.server-stopped` exists or `.server-info` is missing, restart the server.
+
 ### Two Paths for Visual Aids
 
 The Visual Aids tool in SKILL.md has two paths:
@@ -77,7 +94,7 @@ Add to the existing Explicit Mode Commands:
 
 ### 3a. Rendered Diagrams
 
-Mermaid definitions wrapped in an HTML fragment. The frame template loads Mermaid.js and auto-renders to interactive SVG (zoomable, pannable).
+Mermaid definitions wrapped in an HTML fragment. The frame template loads Mermaid.js from CDN and auto-renders to SVG.
 
 ```html
 <h2>How Recursive Calls Stack Up</h2>
@@ -135,7 +152,12 @@ A sequence of steps with CSS transitions (`opacity`, `transform`). Learner navig
 </div>
 ```
 
-Step transitions use CSS for smooth visual changes. Step completion events posted to `.events`.
+Step transitions use CSS for smooth visual changes. Step navigation posts events to `.events`:
+
+```jsonl
+{"type":"walkthrough-step","step":2,"total":6,"timestamp":1706000101}
+{"type":"walkthrough-complete","total":6,"timestamp":1706000150}
+```
 
 ## 4. Server Details
 
@@ -149,7 +171,7 @@ scripts/start-server.sh --project-dir /path/to/project
 
 ### File Serving
 
-- Polls `screen_dir` for newest `.html` file by mtime
+- Polls `screen_dir` every 500ms for newest `.html` file by mtime
 - If file starts with `<!DOCTYPE` or `<html>`: serve as-is, inject helper script before `</body>`
 - Otherwise: wrap in `tutor-frame.html`, inject helper script
 
@@ -210,13 +232,29 @@ Add to existing list:
 
 ### visual-companion.md
 
-A new file (not part of SKILL.md) that serves as the detailed reference for how to generate each content type. The tutor reads this when the companion is activated. Covers:
-- Starting/stopping the server
-- Writing diagram fragments
-- Writing quiz fragments
-- Writing walkthrough fragments
-- Reading and responding to `.events`
-- Pushing waiting screens when returning to terminal-only teaching
+A new file (not part of SKILL.md) that serves as the detailed reference for how to generate each content type. The tutor reads this file when the companion is activated. Structure:
+
+1. **Starting a Session** — how to run `start-server.sh`, save the `screen_dir` path, tell the learner to open the URL
+2. **The Loop** — check server is alive, write HTML fragment to `screen_dir`, tell learner what's on screen, read `.events` on next turn, iterate or advance
+3. **Writing Diagrams** — HTML fragment pattern for Mermaid diagrams with `<pre class="mermaid">` blocks. Semantic filenames (`recursion-tree.html`).
+4. **Writing Quizzes** — HTML fragment pattern for click-based quizzes using `checkAnswer()`. Include `data-correct` attributes. Explain how to read quiz results from `.events`.
+5. **Writing Walkthroughs** — HTML fragment pattern for step-through sequences using `prevStep()`/`nextStep()`. CSS transition guidance.
+6. **Reading Events** — format of `.events` (JSON lines), event types (`quiz-answer`, `walkthrough-step`, `walkthrough-complete`), how to use results in teaching (wrong answer → re-explain, correct → advance, walkthrough complete → ask comprehension question)
+7. **Returning to Terminal** — push a waiting screen when the next exchange doesn't need visuals
+8. **Stopping the Server** — how to run `stop-server.sh`, or let auto-shutdown handle it
+
+Each section includes a concrete HTML example and a description of the expected tutor behavior.
+
+## 7. Error Handling
+
+- **Node.js not available:** The tutor tells the learner that the visual companion requires Node.js and falls back to terminal-only visuals.
+- **Port conflict:** The start script tries a random port in the 50000-59999 range. If it fails, tries another. After 3 attempts, falls back to terminal-only.
+- **Server crashes mid-session:** The tutor checks `.server-info` before each write. If missing or `.server-stopped` exists, restarts the server.
+- **No internet (Mermaid CDN unavailable):** Diagrams show raw Mermaid syntax as a code block. Quizzes and walkthroughs still work (no CDN dependency).
+
+## 8. Session Cleanup
+
+Sessions are stored in `<project>/.tutor/sessions/<timestamp>/`. The stop script deletes the current session directory. Old sessions are not automatically cleaned up — the user can delete `.tutor/sessions/` manually. The `.tutor/` directory should be added to `.gitignore`.
 
 ## Non-Goals
 
