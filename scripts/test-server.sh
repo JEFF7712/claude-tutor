@@ -115,14 +115,27 @@ else
   result 7 "No double script tags in fragment serving" "true"
 fi
 
-# ── Test 8: Graceful shutdown ───────────────────────────────────────────────── ─────────────────────────────────────────────────
+# ── Test 8: Rapid file changes (tiebreaker on same mtime) ────────────────────
+# Write multiple files rapidly; the server should serve the lexicographically last
+for i in 1 2 3 4 5; do
+  echo "<h2>Rapid $i</h2>" > "$TEST_DIR/rapid_$i.html"
+done
+sleep 1
+BODY=$(curl -s "$BASE_URL")
+if echo "$BODY" | grep -q "Rapid 5"; then
+  result 8 "Rapid file changes: serves newest (tiebreaker)" "true"
+else
+  result 8 "Rapid file changes: serves newest (tiebreaker)" "false"
+fi
+
+# ── Test 9: Graceful shutdown ────────────────────────────────────────────────
 kill "$SERVER_PID"
 wait "$SERVER_PID" 2>/dev/null || true
 sleep 1
 if [[ -f "$TEST_DIR/.server-stopped" ]]; then
-  result 8 "Graceful shutdown writes .server-stopped" "true"
+  result 9 "Graceful shutdown writes .server-stopped" "true"
 else
-  result 8 "Graceful shutdown writes .server-stopped" "false"
+  result 9 "Graceful shutdown writes .server-stopped" "false"
 fi
 # Clear PID so cleanup doesn't try to kill again
 SERVER_PID=""

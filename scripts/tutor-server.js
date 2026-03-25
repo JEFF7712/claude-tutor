@@ -56,6 +56,7 @@ const eventsPath = path.join(resolvedScreenDir, ".events");
 function findNewestHtml() {
   let newest = null;
   let newestMtime = 0;
+  let newestBirthtime = 0;
   try {
     const entries = fs.readdirSync(resolvedScreenDir);
     for (const entry of entries) {
@@ -65,7 +66,14 @@ function findNewestHtml() {
         const stat = fs.statSync(full);
         if (stat.mtimeMs > newestMtime) {
           newestMtime = stat.mtimeMs;
+          newestBirthtime = stat.birthtimeMs || 0;
           newest = full;
+        } else if (stat.mtimeMs === newestMtime) {
+          const birth = stat.birthtimeMs || 0;
+          if (birth > newestBirthtime || (birth === newestBirthtime && entry > path.basename(newest))) {
+            newestBirthtime = birth;
+            newest = full;
+          }
         }
       } catch {
         // file may have been removed between readdir and stat

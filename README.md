@@ -61,3 +61,4 @@ You can also switch modes explicitly: "quiz me", "explain it simpler", "use an a
 ## Credits
 
 Teaching modes inspired by [@AI_with_jasmin](https://x.com/AI_with_jasmin).
+Visual Companion inspired by the [Superpowers](https://github.com/anthropics/claude-code-plugins) Visual Companion pattern.
