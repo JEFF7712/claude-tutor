@@ -2,23 +2,6 @@
 
 An adaptive tutor skill for Claude Code that makes Claude act as an interactive coach for learning any topic.
 
-## What's New in v2
-
-- **Live Code Execution** — tutor writes and runs examples so you see real output
-- **Interactive Exercises** — practice with real code challenges, get feedback on your solutions
-- **Visual Aids** — Mermaid diagrams and ASCII visuals for abstract concepts
-- **Web Research** — pulls in current docs and examples when topics need up-to-date info
-
-## Visual Companion (v2.1)
-
-Ask the tutor to "show me in the browser" or "open visuals" during any session to launch a browser-based visual companion. The tutor pushes rich content to your browser while the conversation continues in the terminal:
-
-- **Rendered diagrams** — Mermaid diagrams rendered as interactive SVGs
-- **Interactive quizzes** — click-based multiple choice with instant feedback
-- **Visual walkthroughs** — step-through animations with CSS transitions
-
-Requires Node.js. Start with any visual request during a tutoring session.
-
 ## Install
 
 ### As a plugin
