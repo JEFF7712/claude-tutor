@@ -7,8 +7,8 @@ An adaptive tutor skill for Claude Code that makes Claude act as an interactive 
 ### As a plugin
 
 ```
-/plugin marketplace add JEFF7712/claude-tutor
-/plugin install tutor@claude-tutor
+/plugin marketplace add JEFF7712/rupans-ai-plugins
+/plugin install tutor@rupans-ai-plugins
 ```
 
 ### Manual
